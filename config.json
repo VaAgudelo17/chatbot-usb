@@ -1,0 +1,9 @@
+{
+  "countryCode": "57",
+  "welcomeMessage": "¡Hola! Bienvenido al servicio de la Universidad. ¿En qué podemos ayudarte hoy? 😺",
+  "defaultResponse": "No entendí tu pregunta. Puedes consultar:\n- 'Cursos disponibles'\n- 'Horarios de clase'\n- 'Requisitos de admisión'",
+  "imageCaption": "¡Conoce nuestros programas académicos 2024!",
+  "welcomeImage": "assets/promo.png",
+  "usersToWelcome": ["573505003159@c.us"],
+  "similarityThreshold": 0.65
+}
