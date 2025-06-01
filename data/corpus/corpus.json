@@ -1,115 +1,66 @@
 [
   {
     "intencion": "saludo",
-    "preguntas": ["hola", "inicio", "menu", "volver", "5"],
+    "preguntas": ["hola", "inicio", "menu", "volver"],
     "respuestas": [
-      "¡Hola! 👋\nSoy tu asistente virtual de la Universidad San Buenaventura.\nTe invitamos a conocer nuestros nuevos cursos certificados:\n\n1️⃣ Inteligencia Artificial\n2️⃣ Ciencia de Datos\n3️⃣ Desarrollo Web\n\n📌 Responde con el número o el nombre del curso que te interese para ver más detalles."
-    ],
-    "imagen": "assets/promo.png"
-  },
-  {
-    "intencion": "curso_ia",
-    "preguntas": ["1", "inteligencia artificial", "ia"],
-    "respuestas": [
-      "¡Has seleccionado el curso de Inteligencia Artificial! 🤖\n¿Qué deseas saber?\n\n👉 1. Ver horarios\n👉 2. Ver costo\n👉 3. Ver requisitos\n👉 4. Hablar con un asesor\n👉 5. Volver al menú principal"
+      "¡Hola! 👋\nSoy tu asistente virtual de la Universidad San Buenaventura.\n\nEstos son nuestros cursos:\n\n1️⃣ Inteligencia Artificial\n2️⃣ Ciencia de Datos\n3️⃣ Desarrollo Web\n\n📌 Responde con el número o nombre del curso que te interese."
     ]
   },
   {
-    "intencion": "curso_datos",
-    "preguntas": ["2", "ciencia de datos", "datos"],
-    "respuestas": [
-      "¡Has seleccionado el curso de Ciencia de Datos! 📊\n¿Qué deseas saber?\n\n👉 1. Ver horarios\n👉 2. Ver costo\n👉 3. Ver requisitos\n👉 4. Hablar con un asesor\n👉 5. Volver al menú principal"
-    ]
+    "intencion": "curso_seleccionado",
+    "logica": {
+      "1": {
+        "nombre": "Inteligencia Artificial",
+        "emoji": "🤖",
+        "detalles": {
+          "horarios": "🗓️ Lunes y miércoles | 6:00 p.m. - 8:00 p.m.\nInicio: 10 de junio",
+          "costo": "💰 $500.000 COP\n(Incluye certificado digital y materiales)",
+          "requisitos": "📝 Conocimientos básicos de programación\n💻 Computadora con internet"
+        }
+      },
+      "2": {
+        "nombre": "Ciencia de Datos",
+        "emoji": "📊",
+        "detalles": {
+          "horarios": "🗓️ Martes y jueves | 6:00 p.m. - 8:00 p.m.\nInicio: 11 de junio",
+          "costo": "💰 $450.000 COP\n(Incluye certificado digital y materiales)",
+          "requisitos": "📝 Conocimientos básicos de matemáticas\n💻 Computadora con internet"
+        }
+      },
+      "3": {
+        "nombre": "Desarrollo Web",
+        "emoji": "🌐",
+        "detalles": {
+          "horarios": "🗓️ Sábados | 9:00 a.m. - 1:00 p.m.\nInicio: 15 de junio",
+          "costo": "💰 $400.000 COP\n(Incluye certificado digital y materiales)",
+          "requisitos": "📝 No requiere conocimientos previos\n💻 Computadora con internet"
+        }
+      }
+    },
+    "mensaje_respuesta": "¡Has seleccionado {nombre}! {emoji}\n\n¿Qué necesitas saber?\n\n👉 1. Horarios\n👉 2. Costo\n👉 3. Requisitos\n👉 4. Hablar con asesor\n👉 5. Volver al menú"
   },
   {
-    "intencion": "curso_web",
-    "preguntas": ["3", "desarrollo web", "web"],
-    "respuestas": [
-      "¡Has seleccionado el curso de Desarrollo Web! 🌐\n¿Qué deseas saber?\n\n👉 1. Ver horarios\n👉 2. Ver costo\n👉 3. Ver requisitos\n👉 4. Hablar con un asesor\n👉 5. Volver al menú principal"
-    ]
-  },
-  {
-    "intencion": "horarios_ia",
-    "preguntas": ["1 ia", "horarios ia"],
-    "respuestas": [
-      "🗓️ Horario del curso de Inteligencia Artificial:\nLunes y miércoles de 6:00 p.m. a 8:00 p.m.\nInicio: 10 de junio\n\n¿Deseas saber algo más?\n\n👉 1. Ver costo\n👉 2. Ver requisitos\n👉 3. Hablar con un asesor\n👉 4. Volver al menú principal"
-    ]
-  },
-  {
-    "intencion": "costos_ia",
-    "preguntas": ["2 ia", "costo ia"],
-    "respuestas": [
-      "💰 Costo del curso:\n$500.000 COP\nIncluye clases virtuales en vivo, acceso al aula, materiales descargables y certificado digital.\n\n¿Te interesa algo más?\n\n👉 1. Ver requisitos\n👉 2. Hablar con un asesor\n👉 3. Volver al menú principal"
-    ]
-  },
-  {
-    "intencion": "requisitos_ia",
-    "preguntas": ["3 ia", "requisitos ia"],
-    "respuestas": [
-      "📌 Requisitos:\n\nConocimientos básicos en programación\n\nAcceso a internet y computadora personal\n\n¿Deseas inscribirte o volver al menú?\n\n👉 1. Hablar con un asesor\n👉 2. Ver otros cursos\n👉 3. Salir"
-    ]
-  },
-  {
-    "intencion": "horarios_datos",
-    "preguntas": ["1 datos", "horarios datos"],
-    "respuestas": [
-      "🗓️ Horario del curso de Ciencia de Datos:\nMartes y jueves de 6:00 p.m. a 8:00 p.m.\nInicio: 11 de junio\n\n¿Deseas saber algo más?\n\n👉 1. Ver costo\n👉 2. Ver requisitos\n👉 3. Hablar con un asesor\n👉 4. Volver al menú principal"
-    ]
-  },
-  {
-    "intencion": "costos_datos",
-    "preguntas": ["2 datos", "costo datos"],
-    "respuestas": [
-      "💰 Costo del curso:\n$450.000 COP\nIncluye clases virtuales en vivo, acceso al aula, materiales descargables y certificado digital.\n\n¿Te interesa algo más?\n\n👉 1. Ver requisitos\n👉 2. Hablar con un asesor\n👉 3. Volver al menú principal"
-    ]
-  },
-  {
-    "intencion": "requisitos_datos",
-    "preguntas": ["3 datos", "requisitos datos"],
-    "respuestas": [
-      "📌 Requisitos:\n\nConocimientos básicos de matemáticas\n\nAcceso a internet y computadora personal\n\n¿Deseas inscribirte o volver al menú?\n\n👉 1. Hablar con un asesor\n👉 2. Ver otros cursos\n👉 3. Salir"
-    ]
-  },
-  {
-    "intencion": "horarios_web",
-    "preguntas": ["1 web", "horarios web"],
-    "respuestas": [
-      "🗓️ Horario del curso de Desarrollo Web:\nSábados de 9:00 a.m. a 1:00 p.m.\nInicio: 15 de junio\n\n¿Deseas saber algo más?\n\n👉 1. Ver costo\n👉 2. Ver requisitos\n👉 3. Hablar con un asesor\n👉 4. Volver al menú principal"
-    ]
-  },
-  {
-    "intencion": "costos_web",
-    "preguntas": ["2 web", "costo web"],
-    "respuestas": [
-      "💰 Costo del curso:\n$400.000 COP\nIncluye clases virtuales en vivo, acceso al aula, materiales descargables y certificado digital.\n\n¿Te interesa algo más?\n\n👉 1. Ver requisitos\n👉 2. Hablar con un asesor\n👉 3. Volver al menú principal"
-    ]
-  },
-  {
-    "intencion": "requisitos_web",
-    "preguntas": ["3 web", "requisitos web"],
-    "respuestas": [
-      "📌 Requisitos:\n\nNo se requieren conocimientos previos\n\nAcceso a internet y computadora personal\n\n¿Deseas inscribirte o volver al menú?\n\n👉 1. Hablar con un asesor\n👉 2. Ver otros cursos\n👉 3. Salir"
-    ]
+    "intencion": "detalle_especifico",
+    "opciones": {
+      "1": "horarios",
+      "2": "costo",
+      "3": "requisitos"
+    },
+    "mensaje_continuacion": "\n\n¿Necesitas algo más sobre este curso?\n👉 1. Ver otra información\n👉 2. Asesor\n👉 3. Volver a cursos"
   },
   {
     "intencion": "asesor",
-    "preguntas": ["4", "asesor"],
+    "preguntas": ["4", "asesor", "contacto"],
     "respuestas": [
-      "📞 Un asesor se comunicará contigo. Por favor déjanos tu:\n- Número de teléfono\nO\n- Correo electrónico\n\nEjemplo: 3101234567 o usuario@correo.com"
+      "📞 Para contactar a un asesor, por favor envíanos:\n\n• Tu número de teléfono\n• O tu correo electrónico\n\nEjemplo: 3101234567 o usuario@correo.com"
     ]
   },
   {
     "intencion": "volver_menu",
-    "preguntas": ["2", "ver otros cursos"],
+    "preguntas": ["5", "volver", "menu"],
     "respuestas": [
-      "Aquí están nuestros cursos disponibles:\n1️⃣ Inteligencia Artificial\n2️⃣ Ciencia de Datos\n3️⃣ Desarrollo Web\n\nResponde con el número o nombre del curso para ver sus opciones."
-    ]
-  },
-  {
-    "intencion": "despedida",
-    "preguntas": ["3", "salir", "adios"],
-    "respuestas": [
-      "¡Gracias por contactarnos! 😊\nSi necesitas más información, no dudes en volver a escribirnos.\n¡Éxitos en tu formación profesional!"
-    ]
+      "🔙 Volviendo al menú principal..."
+    ],
+    "redireccion": "saludo"
   }
 ]

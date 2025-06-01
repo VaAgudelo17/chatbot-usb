@@ -120,7 +120,6 @@ class WhatsAppService {
 async handleMessage(msg) {
   if (msg.fromMe || msg.isGroupMsg) return;
 
-  // Verificar usuario autorizado
   if (!config.usersToWelcome.includes(msg.from)) {
     console.log(`Mensaje de usuario no autorizado: ${msg.from}`);
     return;
@@ -129,25 +128,28 @@ async handleMessage(msg) {
   try {
     const response = await nlp.findBestMatch(msg.from, msg.body);
     
-    const responseText = response.text || config.defaultResponse;
-    await this.client.sendMessage(msg.from, responseText);
+    await this.client.sendMessage(msg.from, response.text);
     
-    if (response.image) {
+    if (response.image && typeof response.image === 'string') {
       try {
         const imagePath = path.join(__dirname, '../../', response.image);
-        const media = MessageMedia.fromFilePath(imagePath);
-        await this.client.sendMessage(msg.from, media);
-        console.log(`🖼️ Imagen enviada como respuesta a ${msg.from}`);
+        if (await fs.access(imagePath).then(() => true).catch(() => false)) {
+          const media = MessageMedia.fromFilePath(imagePath);
+          await this.client.sendMessage(msg.from, media);
+          console.log(`🖼️ Imagen enviada a ${msg.from}`);
+        }
       } catch (mediaError) {
-        console.error('Error enviando imagen:', mediaError);
+        console.error('Error enviando multimedia:', mediaError);
       }
     }
 
   } catch (error) {
-    console.error('❌ Error procesando el mensaje:', error);
-    await this.client.sendMessage(msg.from, config.defaultResponse);
+    console.error('❌ Error procesando mensaje:', error);
+    await this.client.sendMessage(msg.from, '⚠️ Ocurrió un error. Intenta nuevamente más tarde.');
   }
 }
+
+
 
   initialize() {
     this.client.initialize();
