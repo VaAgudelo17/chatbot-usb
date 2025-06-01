@@ -156,29 +156,46 @@ class NLPProcessor {
     .trim();
 }
 
-
 async handleCourseOptions(userId, query, courseId) {
-  const options = {
+  const opciones = {
     '1': 'horarios',
     '2': 'costo',
-    '3': 'requisitos'
+    '3': 'requisitos',
+    '4': 'asesor',
+    '5': 'volver'
   };
 
-  const selectedDetail = options[query];
+  const opcion = opciones[query];
 
-  if (selectedDetail) {
-    this.contextManager.updateContext(userId, {
-      step: 'course_detail',
-      course: courseId,
-      detail: selectedDetail
-    });
-    return this.getCourseDetailResponse(courseId, selectedDetail);
+  if (!opcion) {
+    await this.logUnknownQuery(userId, query);
+    return this.getDefaultResponse();
   }
 
-  return {
-    text: `Por favor elige una opción válida:\n1. Horarios\n2. Costo\n3. Requisitos`
-  };
+  if (opcion === 'volver') {
+    this.contextManager.updateContext(userId, { step: 'main_menu' });
+    return this.getMainMenuResponse();
+  }
+
+  if (opcion === 'asesor') {
+    return { 
+      text: '📞 Un asesor se contactará contigo. Proporciona tu teléfono o correo:' 
+    };
+  }
+
+  // Si selecciona un detalle válido
+  this.contextManager.updateContext(userId, {
+    step: 'course_detail',
+    course: courseId,
+    detail: opcion
+  });
+
+  return this.getCourseDetailResponse(courseId, opcion);
 }
+
+
+
+
 
 }
 
