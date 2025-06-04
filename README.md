@@ -1,7 +1,8 @@
 # 🤖 Chatbot Académico para WhatsApp  
-*Asistente virtual de la Universidad San Buenaventura*  
+*Asistente virtual de NeuroWeb*  
 
-![Banner](assets/banner.png)  
+![technology](https://github.com/user-attachments/assets/985c4b4a-65bf-4a0a-944a-997fd239602f)
+
 
 ## 🌟 Características Principales  
 - Consulta información de cursos (horarios, costos, requisitos)  
@@ -13,8 +14,8 @@
 
 ```bash
 # 1. Clonar repositorio
-git clone https://github.com/tu-usuario/chatbot-academico.git
-cd chatbot-academico
+git clone https://github.com/VaAgudelo17/chatbot-usb.git
+cd chatbot-usb
 
 # 2. Instalar dependencias
 npm install
