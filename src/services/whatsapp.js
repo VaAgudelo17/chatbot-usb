@@ -28,6 +28,8 @@ class WhatsAppService {
     };
 
     this.sentWelcome = new Set();
+    this.inactiveTimers = new Map();
+    this.waitingForInteraction = new Map(); // Controlar flujo de interacción
     this.setupEvents();
   }
 
@@ -60,12 +62,9 @@ class WhatsAppService {
 
     this.client.on('ready', async () => {
       console.log('🚀 Bot completamente operativo');
-
       const assetsOk = await this.checkAssets();
       if (assetsOk) {
         await this.sendInitialWelcomeMessages();
-      } else {
-        console.warn('⚠️ No se enviaron mensajes por falta de archivos multimedia');
       }
     });
 
@@ -87,9 +86,10 @@ class WhatsAppService {
           continue;
         }
         
-        console.log(`Enviando a ${user}...`);
+        console.log(`Enviando bienvenida a ${user}...`);
         await this.sendWelcomeMessage(user);
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Espera 2s entre mensajes
+        this.waitingForInteraction.set(user, true); // Marcar que esperamos interacción
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
     } catch (error) {
       console.error('Error enviando bienvenidas:', error);
@@ -97,7 +97,6 @@ class WhatsAppService {
   }
 
   async sendWelcomeMessage(userId) {
-    // Validación adicional
     if (!config.usersToWelcome.includes(userId)) {
       console.warn(`⚠️ Intento de enviar a usuario no autorizado: ${userId}`);
       return;
@@ -117,39 +116,70 @@ class WhatsAppService {
     }
   }
 
-async handleMessage(msg) {
-  if (msg.fromMe || msg.isGroupMsg) return;
-
-  if (!config.usersToWelcome.includes(msg.from)) {
-    console.log(`Mensaje de usuario no autorizado: ${msg.from}`);
-    return;
+  normalizeString(str) {
+    if (!str) return '';
+    return str.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\w\sáéíóú]/gi, '')
+      .trim();
   }
 
-  try {
-    const response = await nlp.findBestMatch(msg.from, msg.body);
-    
-    await this.client.sendMessage(msg.from, response.text);
-    
-    if (response.image && typeof response.image === 'string') {
-      try {
-        const imagePath = path.join(__dirname, '../../', response.image);
-        if (await fs.access(imagePath).then(() => true).catch(() => false)) {
-          const media = MessageMedia.fromFilePath(imagePath);
-          await this.client.sendMessage(msg.from, media);
-          console.log(`🖼️ Imagen enviada a ${msg.from}`);
-        }
-      } catch (mediaError) {
-        console.error('Error enviando multimedia:', mediaError);
-      }
+  async handleMessage(msg) {
+    if (msg.fromMe || msg.isGroupMsg) return;
+
+    if (!config.usersToWelcome.includes(msg.from)) {
+      console.log(`Mensaje de usuario no autorizado: ${msg.from}`);
+      return;
     }
 
-  } catch (error) {
-    console.error('❌ Error procesando mensaje:', error);
-    await this.client.sendMessage(msg.from, '⚠️ Ocurrió un error. Intenta nuevamente más tarde.');
+    // Limpiar timer de inactividad
+    clearTimeout(this.inactiveTimers.get(msg.from));
+
+    // Si estamos esperando la primera interacción
+    if (this.waitingForInteraction.get(msg.from)) {
+      const normalizedMsg = this.normalizeString(msg.body);
+      const saludos = ['hola', 'buenas', 'buenos dias', 'buenas tardes', 'buenas noches', 'hi', 'hello'];
+      
+      if (saludos.includes(normalizedMsg)) {
+        // Usuario ha saludado, mostrar menú principal
+        this.waitingForInteraction.set(msg.from, false);
+        const menu = await nlp.getMainMenuResponse();
+        await this.client.sendMessage(msg.from, menu.text);
+        
+        if (menu.image) {
+          const media = MessageMedia.fromFilePath(path.join(__dirname, '../../', menu.image));
+          await this.client.sendMessage(msg.from, media);
+        }
+      } else {
+        // Mensaje no reconocido como saludo
+        await this.client.sendMessage(msg.from, 
+          "Por favor inicia la conversación con un saludo (ej: 'Hola') para continuar 😊");
+      }
+      return;
+    }
+
+    // Procesamiento normal de mensajes
+    try {
+      const response = await nlp.findBestMatch(msg.from, msg.body);
+      await this.client.sendMessage(msg.from, response.text);
+      
+      if (response.image) {
+        const media = MessageMedia.fromFilePath(path.join(__dirname, '../../', response.image));
+        await this.client.sendMessage(msg.from, media);
+      }
+
+      // Configurar timer de inactividad (5 minutos)
+      this.inactiveTimers.set(msg.from, setTimeout(async () => {
+        await this.client.sendMessage(msg.from, 
+          "⏳ ¿Sigues ahí? Si necesitas ayuda, escribe 'menú' para volver al inicio.");
+      }, 300000));
+
+    } catch (error) {
+      console.error('❌ Error procesando mensaje:', error);
+      await this.client.sendMessage(msg.from, '⚠️ Ocurrió un error. Intenta nuevamente más tarde.');
+    }
   }
-}
-
-
 
   initialize() {
     this.client.initialize();

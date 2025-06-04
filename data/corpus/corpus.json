@@ -1,7 +1,7 @@
 [
   {
     "intencion": "saludo",
-    "preguntas": ["hola", "inicio", "menu", "volver"],
+    "preguntas": ["hola", "inicio", "menu", "volver", "buenos dias", "buenas tardes", "buenas noches"],
     "respuestas": [
       "¡Hola! 👋\nSoy tu asistente virtual de la Universidad San Buenaventura.\n\nEstos son nuestros cursos:\n\n1️⃣ Inteligencia Artificial\n2️⃣ Ciencia de Datos\n3️⃣ Desarrollo Web\n\n📌 Responde con el número o nombre del curso que te interese."
     ]
@@ -15,7 +15,9 @@
         "detalles": {
           "horarios": "🗓️ Lunes y miércoles | 6:00 p.m. - 8:00 p.m.\nInicio: 10 de junio",
           "costo": "💰 $500.000 COP\n(Incluye certificado digital y materiales)",
-          "requisitos": "📝 Conocimientos básicos de programación\n💻 Computadora con internet"
+          "requisitos": "📝 Conocimientos básicos de programación\n💻 Computadora con internet",
+          "duracion": "⏳ Duración: 3 meses (60 horas)",
+          "certificacion": "🎓 Certificación avalada por la Universidad"
         }
       },
       "2": {
@@ -24,7 +26,9 @@
         "detalles": {
           "horarios": "🗓️ Martes y jueves | 6:00 p.m. - 8:00 p.m.\nInicio: 11 de junio",
           "costo": "💰 $450.000 COP\n(Incluye certificado digital y materiales)",
-          "requisitos": "📝 Conocimientos básicos de matemáticas\n💻 Computadora con internet"
+          "requisitos": "📝 Conocimientos básicos de matemáticas\n💻 Computadora con internet",
+          "duracion": "⏳ Duración: 3 meses (60 horas)",
+          "certificacion": "🎓 Certificación avalada por la Universidad"
         }
       },
       "3": {
@@ -33,34 +37,41 @@
         "detalles": {
           "horarios": "🗓️ Sábados | 9:00 a.m. - 1:00 p.m.\nInicio: 15 de junio",
           "costo": "💰 $400.000 COP\n(Incluye certificado digital y materiales)",
-          "requisitos": "📝 No requiere conocimientos previos\n💻 Computadora con internet"
+          "requisitos": "📝 No requiere conocimientos previos\n💻 Computadora con internet",
+          "duracion": "⏳ Duración: 3 meses (60 horas)",
+          "certificacion": "🎓 Certificación avalada por la Universidad"
         }
       }
     },
-    "mensaje_respuesta": "¡Has seleccionado {nombre}! {emoji}\n\n¿Qué necesitas saber?\n\n👉 1. Horarios\n👉 2. Costo\n👉 3. Requisitos\n👉 4. Hablar con asesor\n👉 5. Volver al menú"
+    "mensaje_respuesta": "¡Has seleccionado {nombre}! {emoji}\n\n¿Qué necesitas saber?\n\n👉 1. Horarios\n👉 2. Costo\n👉 3. Requisitos\n👉 4. Duración\n👉 5. Certificación\n👉 6. Hablar con asesor\n👉 7. Volver al menú"
   },
   {
-    "intencion": "detalle_especifico",
-    "opciones": {
-      "1": "horarios",
-      "2": "costo",
-      "3": "requisitos"
-    },
-    "mensaje_continuacion": "\n\n¿Necesitas algo más sobre este curso?\n👉 1. Ver otra información\n👉 2. Asesor\n👉 3. Volver a cursos"
-  },
-  {
-    "intencion": "asesor",
-    "preguntas": ["4", "asesor", "contacto"],
+    "intencion": "despedida",
+    "preguntas": ["adios", "chao", "gracias", "salir", "terminar", "hasta luego"],
     "respuestas": [
-      "📞 Para contactar a un asesor, por favor envíanos:\n\n• Tu número de teléfono\n• O tu correo electrónico\n\nEjemplo: 3101234567 o usuario@correo.com"
+      "Gracias por visitarnos. ¡Esperamos verte pronto en uno de nuestros cursos! 👋",
+      "¡Ha sido un placer ayudarte! Si necesitas algo más, no dudes en volver. 🎓"
     ]
   },
   {
-    "intencion": "volver_menu",
-    "preguntas": ["5", "volver", "menu"],
+    "intencion": "informacion_general",
+    "preguntas": ["informacion", "que ofrecen", "cursos", "programas"],
     "respuestas": [
-      "🔙 Volviendo al menú principal..."
-    ],
-    "redireccion": "saludo"
+      "Ofrecemos los siguientes programas:\n\n1. Inteligencia Artificial 🤖\n2. Ciencia de Datos 📊\n3. Desarrollo Web 🌐\n\nResponde con el número del curso que te interese."
+    ]
+  },
+  {
+    "intencion": "ubicacion",
+    "preguntas": ["donde estan", "ubicacion", "direccion", "como llegar"],
+    "respuestas": [
+      "📍 Estamos ubicados en:\n\nUniversidad San Buenaventura\nCalle 10 #5-22, Bogotá\n\nPuedes visitarnos de lunes a viernes de 8am a 6pm."
+    ]
+  },
+  {
+    "intencion": "contacto",
+    "preguntas": ["telefono", "celular", "llamar", "contacto", "correo", "email"],
+    "respuestas": [
+      "📞 Puedes contactarnos al:\nTeléfono: (601) 1234567\nCelular: 300 123 4567\n✉️ Email: info@usb.edu.co\n\nHorario de atención: Lunes a viernes 8am-6pm"
+    ]
   }
 ]

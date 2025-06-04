@@ -1,21 +1,19 @@
 class ContextManager {
   constructor() {
-    this.contexts = {};
+    this.contexts = new Map();
   }
 
   getContext(userId) {
-    return this.contexts[userId] || null;
+    return this.contexts.get(userId);
   }
 
   updateContext(userId, newContext) {
-    if (!this.contexts[userId]) {
-      this.contexts[userId] = {};
-    }
-    this.contexts[userId] = { ...this.contexts[userId], ...newContext };
+    const currentContext = this.contexts.get(userId) || {};
+    this.contexts.set(userId, { ...currentContext, ...newContext });
   }
 
   clearContext(userId) {
-    delete this.contexts[userId];
+    this.contexts.delete(userId);
   }
 }
 
