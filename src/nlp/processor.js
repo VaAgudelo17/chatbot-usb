@@ -252,19 +252,20 @@ class NLPProcessor {
     }
 
     if (opcion === 'inscribirme') {
-      this.contextManager.updateContext(userId, { 
-        step: 'waiting_inscription_data',
-        data: {},
-        course: courseId
-      });
-      const courseData = corpus
-        .find(item => item.intencion === 'curso_seleccionado')
-        .logica[courseId];
-      return { 
-        text: `📝 Inscripción a ${courseData.nombre} ${courseData.emoji}\n\nPor favor envía tus datos (puedes usar cualquier formato):\n\n• Nombre completo\n• Número de documento\n• Teléfono de contacto\n• Correo electrónico\n\nEjemplo 1:\nNombre: Juan Pérez\nDocumento: 123456789\nTeléfono: 3101234567\nCorreo: juan@example.com\n\nEjemplo 2:\nJuan Pérez\n123456789\n3101234567\njuan@example.com`,
-        image: null
-      };
-    }
+  this.contextManager.updateContext(userId, { 
+    step: 'waiting_inscription_data',
+    data: {},
+    course: courseId
+  });
+  const courseData = corpus
+    .find(item => item.intencion === 'curso_seleccionado')
+    .logica[courseId];
+  return { 
+    text: `📝 Inscripción a ${courseData.nombre} ${courseData.emoji}\n\nPor favor envía tus datos (puedes usar cualquier formato):\n\n• Nombre completo\n• Número de documento\n• Teléfono de contacto\n• Correo electrónico`,
+    image: null
+  };
+}
+
 
     this.contextManager.updateContext(userId, {
       step: 'course_detail',
