@@ -1,35 +1,26 @@
-# Chatbot Académico con PLN
+# 🤖 Chatbot Académico para WhatsApp  
+*Asistente virtual de la Universidad San Buenaventura*  
 
-Bot de WhatsApp para atención automática con procesamiento de lenguaje natural.
+![Banner](assets/banner.png)  
 
-## 🚀 Instalación
+## 🌟 Características Principales  
+- Consulta información de cursos (horarios, costos, requisitos)  
+- Proceso de inscripción integrado  
+- Conexión con asesores académicos  
+- Reconocimiento de mensajes flexibles (números o palabras clave)  
+
+## 🚀 Instalación Rápida  
+
 ```bash
+# 1. Clonar repositorio
 git clone https://github.com/tu-usuario/chatbot-academico.git
 cd chatbot-academico
+
+# 2. Instalar dependencias
 npm install
-```
 
-## ⚙️ Configuración
-1. Añade números autorizados en `config.json`
-2. Coloca tu imagen promocional en `assets/promo.jpg`
-3. Edita el corpus en `data/corpus.json`
+# 3. Configurar (editar archivo config.json)
+cp config.example.json config.json
 
-## ▶️ Ejecución
-```bash
+# 4. Iniciar el bot
 npm start
-```
-
-## 🧠 Arquitectura
-```mermaid
-flowchart LR
-    A[Usuario] --> B[WhatsApp]
-    B --> C[Bot Node.js]
-    C --> D{NLP Processor}
-    D -->|Respuesta| C
-    C --> B
-    B --> A
-```
-
-## 📌 Requisitos
-- Node.js v16+
-- WhatsApp en tu teléfono para escanear QR
