@@ -3,7 +3,7 @@
     "intencion": "saludo",
     "preguntas": ["hola", "inicio", "menu", "volver", "buenos dias", "buenas tardes", "buenas noches"],
     "respuestas": [
-      "¡Hola! 👋\nSoy tu asistente virtual de la Universidad San Buenaventura.\n\nEstos son nuestros cursos:\n\n1️⃣ Inteligencia Artificial\n2️⃣ Ciencia de Datos\n3️⃣ Desarrollo Web\n\n📌 Responde con el número o nombre del curso que te interese."
+      "¡Hola! 👋\nSoy tu asistente virtual de NeuroWeb.\n\nEstos son nuestros cursos:\n\n1️⃣ Inteligencia Artificial\n2️⃣ Ciencia de Datos\n3️⃣ Desarrollo Web\n\n📌 Responde con el número o nombre del curso que te interese."
     ]
   },
   {
@@ -17,7 +17,7 @@
           "costo": "💰 $500.000 COP\n(Incluye certificado digital y materiales)",
           "requisitos": "📝 Conocimientos básicos de programación\n💻 Computadora con internet",
           "duracion": "⏳ Duración: 3 meses (60 horas)",
-          "certificacion": "🎓 Certificación avalada por la Universidad"
+          "certificacion": "🎓 Certificación avalada por la Universidad\n• Incluye código QR de validación\n• Registro en sistema universitario"
         }
       },
       "2": {
@@ -28,7 +28,7 @@
           "costo": "💰 $450.000 COP\n(Incluye certificado digital y materiales)",
           "requisitos": "📝 Conocimientos básicos de matemáticas\n💻 Computadora con internet",
           "duracion": "⏳ Duración: 3 meses (60 horas)",
-          "certificacion": "🎓 Certificación avalada por la Universidad"
+          "certificacion": "🎓 Certificación avalada por la Universidad\n• Incluye código QR de validación\n• Registro en sistema universitario"
         }
       },
       "3": {
@@ -39,11 +39,11 @@
           "costo": "💰 $400.000 COP\n(Incluye certificado digital y materiales)",
           "requisitos": "📝 No requiere conocimientos previos\n💻 Computadora con internet",
           "duracion": "⏳ Duración: 3 meses (60 horas)",
-          "certificacion": "🎓 Certificación avalada por la Universidad"
+          "certificacion": "🎓 Certificación avalada por la Universidad\n• Incluye código QR de validación\n• Registro en sistema universitario"
         }
       }
     },
-    "mensaje_respuesta": "¡Has seleccionado {nombre}! {emoji}\n\n¿Qué necesitas saber?\n\n👉 1. Horarios\n👉 2. Costo\n👉 3. Requisitos\n👉 4. Duración\n👉 5. Certificación\n👉 6. Hablar con asesor\n👉 7. Volver al menú"
+    "mensaje_respuesta": "¡Has seleccionado {nombre}! {emoji}\n\n¿Qué necesitas saber? Responde con el número o palabra clave:\n\n1. Horarios\n2. Costo\n3. Requisitos\n4. Duración\n5. Certificación\n6. Hablar con asesor\n7. Inscribirme\n8. Volver al menú"
   },
   {
     "intencion": "despedida",

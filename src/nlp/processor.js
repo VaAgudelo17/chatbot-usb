@@ -16,6 +16,7 @@ class NLPProcessor {
   constructor() {
     this.contextManager = new ContextManager();
     this.unknownQueriesFile = path.join(__dirname, '../../data/unknown_queries.log');
+    this.inscriptionsFile = path.join(__dirname, '../../data/inscriptions.log');
   }
 
   async findBestMatch(userId, query) {
@@ -52,13 +53,18 @@ class NLPProcessor {
 
     const context = this.contextManager.getContext(userId) || { step: 'main_menu' };
 
+    // Manejar contexto de inscripción
+    if (context.step === 'waiting_inscription_data') {
+      return this.handleInscriptionData(userId, query, context);
+    }
+
     // Manejar contexto de espera de información de contacto
     if (context.step === 'waiting_contact_info') {
       return this.handleContactInfo(userId, query);
     }
 
     // Comandos universales
-    if (queryNormalizada === '5' || queryNormalizada === '7' || queryNormalizada.includes('volver') || queryNormalizada.includes('menu')) {
+    if (queryNormalizada === '8' || queryNormalizada.includes('volver') || queryNormalizada.includes('menu')) {
       this.contextManager.updateContext(userId, { step: 'main_menu' });
       return this.getMainMenuResponse();
     }
@@ -76,11 +82,119 @@ class NLPProcessor {
     }
   }
 
+  async handleInscriptionData(userId, query, context) {
+    // Extraer datos con múltiples formatos
+    const extractData = (text) => {
+      const data = {
+        nombre: '',
+        documento: '',
+        telefono: '',
+        correo: ''
+      };
+
+      // 1. Intentar extraer con prefijos
+      const prefixedPatterns = {
+        nombre: ['nombre', 'name'],
+        documento: ['documento', 'cedula', 'identificacion'],
+        telefono: ['telefono', 'teléfono', 'celular', 'cel', 'contacto'],
+        correo: ['correo', 'email', 'e-mail']
+      };
+
+      for (const [field, patterns] of Object.entries(prefixedPatterns)) {
+        for (const pattern of patterns) {
+          const regex = new RegExp(`${pattern}[:\s]*(.*?)(?=\\n|${Object.keys(prefixedPatterns).filter(k => k !== field).join('|')}|$)`, 'i');
+          const match = text.match(regex);
+          if (match && match[1]) {
+            data[field] = match[1].trim();
+            break;
+          }
+        }
+      }
+
+      // 2. Si no se encontraron prefijos, intentar por líneas
+      if (!data.nombre || !data.documento || !data.telefono || !data.correo) {
+        const lines = text.split('\n').filter(line => line.trim() !== '');
+        if (lines.length >= 4) {
+          data.nombre = lines[0].trim();
+          data.documento = lines[1].trim();
+          data.telefono = lines[2].trim();
+          
+          // Buscar email en las líneas restantes
+          const emailLine = lines.slice(3).find(line => line.includes('@'));
+          data.correo = emailLine ? emailLine.trim() : lines[3].trim();
+        }
+      }
+
+      // 3. Búsqueda avanzada de email si no se encontró
+      if (!data.correo || !data.correo.includes('@')) {
+        const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+        if (emailMatch) data.correo = emailMatch[0];
+      }
+
+      return data;
+    };
+
+    const extracted = extractData(query);
+    const newData = {
+      ...context.data,
+      nombre: extracted.nombre || context.data.nombre,
+      documento: extracted.documento || context.data.documento,
+      telefono: extracted.telefono || context.data.telefono,
+      correo: extracted.correo || context.data.correo
+    };
+
+    this.contextManager.updateContext(userId, { data: newData });
+
+    // Verificar si tenemos todos los datos
+    if (newData.nombre && newData.documento && newData.telefono && newData.correo) {
+      const courseData = corpus
+        .find(item => item.intencion === 'curso_seleccionado')
+        .logica[context.course];
+
+      // Guardar inscripción
+      await this.saveInscription({
+        userId,
+        ...newData,
+        curso: courseData.nombre,
+        cursoId: context.course,
+        fecha: new Date().toISOString()
+      });
+
+      // Resetear contexto
+      this.contextManager.updateContext(userId, { step: 'main_menu' });
+
+      return {
+        text: `✅ ¡Inscripción a ${courseData.nombre} completada! ${courseData.emoji}\n\nResumen:\nNombre: ${newData.nombre}\nDocumento: ${newData.documento}\nTeléfono: ${newData.telefono}\nCorreo: ${newData.correo}\n\nRecibirás un correo de confirmación en las próximas horas.`,
+        image: null
+      };
+    }
+
+    // Si faltan datos
+    const missing = [];
+    if (!newData.nombre) missing.push("🔹 Nombre completo");
+    if (!newData.documento) missing.push("🔹 Número de documento");
+    if (!newData.telefono) missing.push("🔹 Teléfono de contacto");
+    if (!newData.correo) missing.push("🔹 Correo electrónico");
+
+    const courseData = corpus
+      .find(item => item.intencion === 'curso_seleccionado')
+      .logica[context.course];
+
+    return {
+      text: `📝 Faltan datos para tu inscripción a ${courseData.nombre}:\n${missing.join('\n')}\n\nPuedes enviar los datos de estas formas:\n\n1. Con prefijos:\nNombre: [Tu nombre]\nDocumento: [Tu documento]\nTeléfono: [Tu teléfono]\nCorreo: [Tu correo]\n\n2. Uno por línea:\n[Tu nombre]\n[Tu documento]\n[Tu teléfono]\n[Tu correo]`,
+      image: null
+    };
+  }
+
+  async saveInscription(data) {
+    await fs.appendFile(this.inscriptionsFile, JSON.stringify(data) + '\n');
+  }
+
   async handleMainMenu(userId, query) {
     const courses = {
-      '1': '1', '1.': '1', '1 ': '1', 'inteligencia artificial': '1', 'ia': '1', 'artificial': '1',
-      '2': '2', '2.': '2', '2 ': '2', 'ciencia de datos': '2', 'datos': '2', 'ciencia': '2',
-      '3': '3', '3.': '3', '3 ': '3', 'desarrollo web': '3', 'web': '3', 'desarrollo': '3'
+      '1': '1', '1.': '1', 'inteligencia artificial': '1', 'ia': '1',
+      '2': '2', '2.': '2', 'ciencia de datos': '2', 'datos': '2',
+      '3': '3', '3.': '3', 'desarrollo web': '3', 'web': '3'
     };
 
     const course = courses[query];
@@ -100,13 +214,14 @@ class NLPProcessor {
 
   async handleCourseOptions(userId, query, courseId) {
     const opciones = {
-      '1': 'horarios',
-      '2': 'costo',
-      '3': 'requisitos',
-      '4': 'duracion',
-      '5': 'certificacion',
-      '6': 'asesor',
-      '7': 'volver'
+      '1': 'horarios', 'horario': 'horarios',
+      '2': 'costo', 'precio': 'costo',
+      '3': 'requisitos', 'requisito': 'requisitos',
+      '4': 'duracion', 'duración': 'duracion',
+      '5': 'certificacion', 'certificado': 'certificacion',
+      '6': 'asesor', 'hablar': 'asesor',
+      '7': 'inscribirme', 'inscripcion': 'inscribirme',
+      '8': 'volver', 'menu': 'volver'
     };
 
     const opcion = opciones[query];
@@ -136,6 +251,21 @@ class NLPProcessor {
       };
     }
 
+    if (opcion === 'inscribirme') {
+      this.contextManager.updateContext(userId, { 
+        step: 'waiting_inscription_data',
+        data: {},
+        course: courseId
+      });
+      const courseData = corpus
+        .find(item => item.intencion === 'curso_seleccionado')
+        .logica[courseId];
+      return { 
+        text: `📝 Inscripción a ${courseData.nombre} ${courseData.emoji}\n\nPor favor envía tus datos (puedes usar cualquier formato):\n\n• Nombre completo\n• Número de documento\n• Teléfono de contacto\n• Correo electrónico\n\nEjemplo 1:\nNombre: Juan Pérez\nDocumento: 123456789\nTeléfono: 3101234567\nCorreo: juan@example.com\n\nEjemplo 2:\nJuan Pérez\n123456789\n3101234567\njuan@example.com`,
+        image: null
+      };
+    }
+
     this.contextManager.updateContext(userId, {
       step: 'course_detail',
       course: courseId,
@@ -148,11 +278,11 @@ class NLPProcessor {
   async handleDetailOptions(userId, query, context) {
     const detailsOrder = ['horarios', 'costo', 'requisitos', 'duracion', 'certificacion'];
     
-    if (query === '1') {
+    if (query === '1' || this.normalizeString(query) === 'siguiente') {
       const nextDetail = this.getNextDetail(context.detail, detailsOrder);
       this.contextManager.updateContext(userId, { detail: nextDetail });
       return this.getCourseDetailResponse(context.course, nextDetail);
-    } else if (query === '2') {
+    } else if (query === '2' || this.normalizeString(query).includes('asesor')) {
       this.contextManager.updateContext(userId, { 
         step: 'waiting_contact_info',
         course: context.course
@@ -173,7 +303,6 @@ class NLPProcessor {
     const normalizedQuery = this.normalizeString(query).replace(/\s+/g, '');
     
     if (phoneRegex.test(normalizedQuery)) {
-      // Guardar en "base de datos" (archivo temporal)
       await this.saveContactInfo(userId, { phone: normalizedQuery });
       this.contextManager.updateContext(userId, { step: 'main_menu' });
       return {
@@ -237,9 +366,7 @@ class NLPProcessor {
       .find(item => item.intencion === 'curso_seleccionado')
       .logica[courseId];
 
-    const optionsText = detailKey === 'asesor' ? 
-      "\n\nPor favor envía tu número de teléfono o correo electrónico:" :
-      "\n\n¿Qué más necesitas?\n1. Ver otra información\n2. Hablar con asesor\n3. Volver al menú";
+    const optionsText = "\n\n¿Qué más necesitas?\n1. Ver otra información\n2. Hablar con asesor\n3. Volver al menú";
 
     return {
       text: `${courseData.detalles[detailKey]}${optionsText}`,
@@ -250,13 +377,20 @@ class NLPProcessor {
   getDefaultResponse(context) {
     if (context?.step === 'course_selected') {
       return { 
-        text: "😅 No entendí. Por favor elige:\n\n1. Horarios\n2. Costo\n3. Requisitos\n4. Duración\n5. Certificación\n6. Asesor\n7. Volver\n\nO escribe 'menú' para reiniciar",
+        text: "😅 No entendí. Por favor elige una opción:\n\n1. Horarios\n2. Costo\n3. Requisitos\n4. Duración\n5. Certificación\n6. Hablar con asesor\n7. Inscribirme\n8. Volver",
+        image: null
+      };
+    }
+    
+    if (context?.step === 'waiting_inscription_data') {
+      return {
+        text: "📝 Por favor envía tus datos para completar la inscripción:\n\n• Nombre completo\n• Número de documento\n• Teléfono de contacto\n• Correo electrónico\n\nPuedes enviarlos en cualquier formato.",
         image: null
       };
     }
     
     return { 
-      text: "😕 No entendí. Selecciona:\n\n1️⃣ Inteligencia Artificial\n2️⃣ Ciencia de Datos\n3️⃣ Desarrollo Web\n\nO pregunta por:\n• Ubicación\n• Contacto\n• Información",
+      text: "😕 No entendí. Selecciona:\n\n1️⃣ Inteligencia Artificial\n2️⃣ Ciencia de Datos\n3️⃣ Desarrollo Web\n\nO escribe:\n• 'Ubicación' para dirección\n• 'Contacto' para teléfonos",
       image: null
     };
   }
