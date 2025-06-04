@@ -1,27 +1,41 @@
-# 🤖 Chatbot Académico para WhatsApp  
-*Asistente virtual de NeuroWeb*  
+# 🤖 Chatbot Académico con PLN
 
-![technology](https://github.com/user-attachments/assets/985c4b4a-65bf-4a0a-944a-997fd239602f)
+Bot de WhatsApp para atención automática con procesamiento de lenguaje natural, diseñado para instituciones educativas.
+
+![chatbot](https://github.com/user-attachments/assets/d266b99f-ec52-48aa-869a-46ebd89003e3)
 
 
-## 🌟 Características Principales  
-- Consulta información de cursos (horarios, costos, requisitos)  
-- Proceso de inscripción integrado  
-- Conexión con asesores académicos  
-- Reconocimiento de mensajes flexibles (números o palabras clave)  
+## 🌟 Características Principales
+- **Menú interactivo** de cursos y programas académicos
+- **Proceso de inscripción** guiado con validación de datos
+- **Información detallada** sobre horarios, costos y requisitos
+- **Conexión con asesores** cuando se requiere
+- **Reconocimiento flexible** de lenguaje natural
+- **Persistencia de contexto** durante conversaciones
 
-## 🚀 Instalación Rápida  
+## 🛠️ Arquitectura Técnica
 
-```bash
-# 1. Clonar repositorio
-git clone https://github.com/VaAgudelo17/chatbot-usb.git
-cd chatbot-usb
+### Diagrama de Componentes
+```mermaid
+flowchart TB
+    subgraph WhatsApp
+        WAPI[WhatsApp Web API]
+    end
 
-# 2. Instalar dependencias
-npm install
+    subgraph Aplicación
+        BOT[Bot Principal]
+        NLP[Procesador PLN]
+        CTX[Gestor de Contexto]
+        DS[(Data Stores)]
+    end
 
-# 3. Configurar (editar archivo config.json)
-cp config.example.json config.json
-
-# 4. Iniciar el bot
-npm start
+    Usuario --> WAPI
+    WAPI --> BOT
+    BOT --> NLP
+    NLP --> CTX
+    CTX --> DS
+    DS --> CTX
+    CTX --> NLP
+    NLP --> BOT
+    BOT --> WAPI
+    WAPI --> Usuario
