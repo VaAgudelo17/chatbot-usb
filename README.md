@@ -2,7 +2,7 @@
 
 NeuroWeb es un servicio automatizado que permite la inscripción y atención a estudiantes interesados en formarse en Inteligencia Artificial, Ciencia de Datos y Desarrollo Web a través de WhatsApp.
 
-<img src="https://github.com/user-attachments/assets/59a7dc4c-9d6f-4b9f-b869-61e6d4841445" alt="chatbot" width="200"/>
+<img src="https://github.com/user-attachments/assets/59a7dc4c-9d6f-4b9f-b869-61e6d4841445" alt="chatbot" width="100"/>
 
 ## 🌟 Características Principales
 
@@ -42,7 +42,7 @@ chatbot-academico/
 │   │   └── nlp/          # Procesamiento de lenguaje
 └── config.json           # Configuración inicial
 
-
+```
 
 ## 🛠️ Arquitectura Técnica
 
@@ -71,3 +71,33 @@ flowchart TB
     NLP --> BOT
     BOT --> WAPI
     WAPI --> Usuario
+```
+🚀 Instalación y Configuración
+Clona el repositorio:
+```
+git clone https://github.com/tu-usuario/chatbot-academico.git
+cd chatbot-academico
+```
+Instala dependencias:
+```
+npm install
+```
+## ▶️ Ejecución
+```
+npm start
+```
+## 🛠️ Dependencias Principales
+| Paquete           | Función                      |
+|-------------------|------------------------------|
+| whatsapp-web.js    | Conexión con WhatsApp        |
+| string-similarity  | Comparación de similitud de texto |
+| fs-extra          | Manejo de archivos            |
+| qrcode-terminal    | Generación de QR en terminal |
+
+## 📌 Requisitos del Sistema
+- **Node.js v16+
+- **NPM v8+
+- **WhatsApp activo en dispositivo móvil
+- **Navegador Chromium instalado
+
+
