@@ -6,7 +6,7 @@ NeuroWeb es un servicio automatizado que permite la inscripción y atención a e
 
 ## 🌟 Características Principales
 
-- **Menú interactivo** de cursos y programas académicos
+- **Menú interactivo** de cursos académicos
 - **Proceso de inscripción** guiado con validación de datos
 - **Información detallada** sobre horarios, costos y requisitos
 - **Conexión con asesores** cuando se requiere
