@@ -23,20 +23,18 @@ class WhatsAppService {
     });
 
     this.assetPaths = {
-      welcomeImage: path.join(__dirname, '../../', config.welcomeImage),
-      responseImage: path.join(__dirname, '../../assets/ola.gif')
+      welcomeImage: path.join(__dirname, '../../', config.welcomeImage)
     };
 
     this.sentWelcome = new Set();
     this.inactiveTimers = new Map();
-    this.waitingForInteraction = new Map(); 
+    this.waitingForInteraction = new Map();
     this.setupEvents();
   }
 
   async checkAssets() {
     try {
       await fs.access(this.assetPaths.welcomeImage);
-      await fs.access(this.assetPaths.responseImage);
       console.log('🖼️ Todos los assets existen correctamente.');
       return true;
     } catch (e) {
@@ -79,16 +77,16 @@ class WhatsAppService {
   async sendInitialWelcomeMessages() {
     try {
       console.log('Usuarios configurados para recibir bienvenida:', config.usersToWelcome);
-      
+
       for (const user of config.usersToWelcome) {
         if (!user.endsWith('@c.us')) {
           console.warn(`Formato inválido: ${user} - Se omitirá`);
           continue;
         }
-        
+
         console.log(`Enviando bienvenida a ${user}...`);
         await this.sendWelcomeMessage(user);
-        this.waitingForInteraction.set(user, true); // Marcar que esperamos interacción
+        this.waitingForInteraction.set(user, true);
         await new Promise(resolve => setTimeout(resolve, 2000));
       }
     } catch (error) {
@@ -101,13 +99,13 @@ class WhatsAppService {
       console.warn(`⚠️ Intento de enviar a usuario no autorizado: ${userId}`);
       return;
     }
-    
+
     try {
       const welcomeMsg = config.welcomeMessage.replace('{user}', userId.split('@')[0]);
       await this.client.sendMessage(userId, welcomeMsg);
-      
+
       if (config.welcomeImage) {
-        const media = MessageMedia.fromFilePath(path.join(__dirname, '../../', config.welcomeImage));
+        const media = MessageMedia.fromFilePath(this.assetPaths.welcomeImage);
         await this.client.sendMessage(userId, media, { caption: config.imageCaption });
       }
       console.log(`✅ Bienvenida enviada a ${userId}`);
@@ -138,20 +136,18 @@ class WhatsAppService {
     if (this.waitingForInteraction.get(msg.from)) {
       const normalizedMsg = this.normalizeString(msg.body);
       const saludos = ['hola', 'buenas', 'buenos dias', 'buenas tardes', 'buenas noches', 'hi', 'hello'];
-      
-      if (saludos.includes(normalizedMsg)) {
 
+      if (saludos.includes(normalizedMsg)) {
         this.waitingForInteraction.set(msg.from, false);
         const menu = await nlp.getMainMenuResponse();
         await this.client.sendMessage(msg.from, menu.text);
-        
+
         if (menu.image) {
           const media = MessageMedia.fromFilePath(path.join(__dirname, '../../', menu.image));
           await this.client.sendMessage(msg.from, media);
         }
       } else {
-    
-        await this.client.sendMessage(msg.from, 
+        await this.client.sendMessage(msg.from,
           "Por favor inicia la conversación con un saludo (ej: 'Hola') para continuar 😊");
       }
       return;
@@ -160,15 +156,14 @@ class WhatsAppService {
     try {
       const response = await nlp.findBestMatch(msg.from, msg.body);
       await this.client.sendMessage(msg.from, response.text);
-      
+
       if (response.image) {
         const media = MessageMedia.fromFilePath(path.join(__dirname, '../../', response.image));
         await this.client.sendMessage(msg.from, media);
       }
 
-      // Configurar timer de inactividad (5 minutos)
       this.inactiveTimers.set(msg.from, setTimeout(async () => {
-        await this.client.sendMessage(msg.from, 
+        await this.client.sendMessage(msg.from,
           "⏳ ¿Sigues ahí? Si necesitas ayuda, escribe 'menú' para volver al inicio.");
       }, 300000));
 
