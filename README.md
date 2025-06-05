@@ -39,3 +39,8 @@ flowchart TB
     NLP --> BOT
     BOT --> WAPI
     WAPI --> Usuario
+
+diagrama...
+## hola
+
+
