@@ -95,9 +95,9 @@ npm start
 | qrcode-terminal    | Generación de QR en terminal |
 
 ## 📌 Requisitos del Sistema
-- **Node.js v16+
-- **NPM v8+
-- **WhatsApp activo en dispositivo móvil
-- **Navegador Chromium instalado
+- **Node.js v16+ **
+- **NPM v8+ **
+- **WhatsApp activo en dispositivo móvil **
+- **Navegador Chromium instalado **
 
 
