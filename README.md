@@ -75,8 +75,8 @@ flowchart TB
 🚀 Instalación y Configuración
 Clona el repositorio:
 ```
-git clone https://github.com/tu-usuario/chatbot-academico.git
-cd chatbot-academico
+git clone https://github.com/VaAgudelo17/chatbot-usb.git
+cd chatbot-usb
 ```
 Instala dependencias:
 ```
