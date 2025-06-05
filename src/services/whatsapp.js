@@ -29,7 +29,7 @@ class WhatsAppService {
 
     this.sentWelcome = new Set();
     this.inactiveTimers = new Map();
-    this.waitingForInteraction = new Map(); // Controlar flujo de interacción
+    this.waitingForInteraction = new Map(); 
     this.setupEvents();
   }
 
@@ -133,16 +133,14 @@ class WhatsAppService {
       return;
     }
 
-    // Limpiar timer de inactividad
     clearTimeout(this.inactiveTimers.get(msg.from));
 
-    // Si estamos esperando la primera interacción
     if (this.waitingForInteraction.get(msg.from)) {
       const normalizedMsg = this.normalizeString(msg.body);
       const saludos = ['hola', 'buenas', 'buenos dias', 'buenas tardes', 'buenas noches', 'hi', 'hello'];
       
       if (saludos.includes(normalizedMsg)) {
-        // Usuario ha saludado, mostrar menú principal
+
         this.waitingForInteraction.set(msg.from, false);
         const menu = await nlp.getMainMenuResponse();
         await this.client.sendMessage(msg.from, menu.text);
@@ -152,14 +150,13 @@ class WhatsAppService {
           await this.client.sendMessage(msg.from, media);
         }
       } else {
-        // Mensaje no reconocido como saludo
+    
         await this.client.sendMessage(msg.from, 
           "Por favor inicia la conversación con un saludo (ej: 'Hola') para continuar 😊");
       }
       return;
     }
 
-    // Procesamiento normal de mensajes
     try {
       const response = await nlp.findBestMatch(msg.from, msg.body);
       await this.client.sendMessage(msg.from, response.text);

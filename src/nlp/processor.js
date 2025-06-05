@@ -5,7 +5,6 @@ const config = require('../../config.json');
 const ContextManager = require('./contextManager');
 const corpus = require('../../data/corpus/corpus.json');
 
-// Constantes
 const DESPEDIDAS = ['adios', 'chao', 'gracias', 'salir', 'terminar', 'hasta luego'];
 const INFO_GENERAL = ['informacion', 'que ofrecen', 'cursos', 'programas'];
 const UBICACION = ['donde estan', 'ubicacion', 'direccion', 'como llegar'];
@@ -22,7 +21,6 @@ class NLPProcessor {
   async findBestMatch(userId, query) {
     const queryNormalizada = this.normalizeString(query);
     
-    // Verificar despedidas primero
     if (DESPEDIDAS.includes(queryNormalizada)) {
       const despedida = corpus.find(item => item.intencion === 'despedida');
       return { 
@@ -31,7 +29,6 @@ class NLPProcessor {
       };
     }
 
-    // Manejar otras intenciones directas
     if (INFO_GENERAL.includes(queryNormalizada)) {
       const info = corpus.find(item => item.intencion === 'informacion_general');
       return { text: info.respuestas[0], image: null };
@@ -53,23 +50,19 @@ class NLPProcessor {
 
     const context = this.contextManager.getContext(userId) || { step: 'main_menu' };
 
-    // Manejar contexto de inscripción
     if (context.step === 'waiting_inscription_data') {
       return this.handleInscriptionData(userId, query, context);
     }
 
-    // Manejar contexto de espera de información de contacto
     if (context.step === 'waiting_contact_info') {
       return this.handleContactInfo(userId, query);
     }
 
-    // Comandos universales
     if (queryNormalizada === '8' || queryNormalizada.includes('volver') || queryNormalizada.includes('menu')) {
       this.contextManager.updateContext(userId, { step: 'main_menu' });
       return this.getMainMenuResponse();
     }
 
-    // Lógica por pasos
     switch (context.step) {
       case 'main_menu':
         return this.handleMainMenu(userId, queryNormalizada);
@@ -83,7 +76,6 @@ class NLPProcessor {
   }
 
   async handleInscriptionData(userId, query, context) {
-    // Extraer datos con múltiples formatos
     const extractData = (text) => {
       const data = {
         nombre: '',
@@ -92,7 +84,6 @@ class NLPProcessor {
         correo: ''
       };
 
-      // 1. Intentar extraer con prefijos
       const prefixedPatterns = {
         nombre: ['nombre', 'name'],
         documento: ['documento', 'cedula', 'identificacion'],
@@ -111,7 +102,6 @@ class NLPProcessor {
         }
       }
 
-      // 2. Si no se encontraron prefijos, intentar por líneas
       if (!data.nombre || !data.documento || !data.telefono || !data.correo) {
         const lines = text.split('\n').filter(line => line.trim() !== '');
         if (lines.length >= 4) {
@@ -119,13 +109,12 @@ class NLPProcessor {
           data.documento = lines[1].trim();
           data.telefono = lines[2].trim();
           
-          // Buscar email en las líneas restantes
+
           const emailLine = lines.slice(3).find(line => line.includes('@'));
           data.correo = emailLine ? emailLine.trim() : lines[3].trim();
         }
       }
 
-      // 3. Búsqueda avanzada de email si no se encontró
       if (!data.correo || !data.correo.includes('@')) {
         const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
         if (emailMatch) data.correo = emailMatch[0];
@@ -145,13 +134,11 @@ class NLPProcessor {
 
     this.contextManager.updateContext(userId, { data: newData });
 
-    // Verificar si tenemos todos los datos
     if (newData.nombre && newData.documento && newData.telefono && newData.correo) {
       const courseData = corpus
         .find(item => item.intencion === 'curso_seleccionado')
         .logica[context.course];
 
-      // Guardar inscripción
       await this.saveInscription({
         userId,
         ...newData,
@@ -160,7 +147,6 @@ class NLPProcessor {
         fecha: new Date().toISOString()
       });
 
-      // Resetear contexto
       this.contextManager.updateContext(userId, { step: 'main_menu' });
 
       return {
@@ -169,7 +155,6 @@ class NLPProcessor {
       };
     }
 
-    // Si faltan datos
     const missing = [];
     if (!newData.nombre) missing.push("🔹 Nombre completo");
     if (!newData.documento) missing.push("🔹 Número de documento");

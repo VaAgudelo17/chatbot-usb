@@ -4,6 +4,6 @@
   "defaultResponse": "No entendí tu pregunta. Puedes consultar:\n- 'Cursos disponibles'\n- 'Horarios de clase'\n- 'Requisitos de admisión'",
   "imageCaption": "¡Conoce nuestros programas académicos 2025!",
   "welcomeImage": "assets/promo.png",
-  "usersToWelcome": ["573505003159@c.us", "573505427657@c.us",  "573115611485@c.us"],
+  "usersToWelcome": ["573505427657@c.us",  "573115611485@c.us"],
   "similarityThreshold": 0.65
 }
