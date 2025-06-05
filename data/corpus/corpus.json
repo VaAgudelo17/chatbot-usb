@@ -1,7 +1,7 @@
 [
   {
     "intencion": "saludo",
-    "preguntas": ["hola", "inicio", "menu", "volver", "buenos dias", "buenas tardes", "buenas noches"],
+    "preguntas": ["hola", "inicio", "menu", "volver", "buenos dias", "buenas tardes", "buenas noches", "buenas"],
     "respuestas": [
       "¡Hola! 👋\nSoy tu asistente virtual de NeuroWeb.\n\nEstos son nuestros cursos:\n\n1️⃣ Inteligencia Artificial\n2️⃣ Ciencia de Datos\n3️⃣ Desarrollo Web\n\n📌 Responde con el número o nombre del curso que te interese."
     ]
@@ -47,7 +47,7 @@
   },
   {
     "intencion": "despedida",
-    "preguntas": ["adios", "chao", "gracias", "salir", "terminar", "hasta luego"],
+    "preguntas": ["adios", "chao", "gracias", "salir", "terminar", "hasta luego", "bye", "thx"],
     "respuestas": [
       "Gracias por visitarnos. ¡Esperamos verte pronto en uno de nuestros cursos! 👋",
       "¡Ha sido un placer ayudarte! Si necesitas algo más, no dudes en volver. 🎓"
@@ -55,21 +55,21 @@
   },
   {
     "intencion": "informacion_general",
-    "preguntas": ["informacion", "que ofrecen", "cursos", "programas"],
+    "preguntas": ["informacion", "que ofrecen", "cursos", "programas", "oferta academica", "programas academicos", "quiero informacion"],
     "respuestas": [
       "Ofrecemos los siguientes programas:\n\n1. Inteligencia Artificial 🤖\n2. Ciencia de Datos 📊\n3. Desarrollo Web 🌐\n\nResponde con el número del curso que te interese."
     ]
   },
   {
     "intencion": "ubicacion",
-    "preguntas": ["donde estan", "ubicacion", "direccion", "como llegar"],
+    "preguntas": ["donde estan", "ubicacion", "direccion", "como llegar", "lugar"],
     "respuestas": [
       "📍 Estamos ubicados en:\n\nUniversidad San Buenaventura\nCra. 122 #6-65, Barrio Pance, Cali\n\nPuedes visitarnos de lunes a viernes de 8am a 6pm."
     ]
   },
   {
     "intencion": "contacto",
-    "preguntas": ["telefono", "celular", "llamar", "contacto", "correo", "email"],
+    "preguntas": ["telefono", "celular", "llamar", "contacto", "correo", "email", "whatsapp", "phone"],
     "respuestas": [
       "📞 Puedes contactarnos al:\nCelular: 3504314868\n✉️ Email: valeagu1710@gmail.com\n\nHorario de atención: Lunes a viernes 8am-6pm"
     ]

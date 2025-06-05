@@ -44,6 +44,14 @@ class NLPProcessor {
       return { text: contacto.respuestas[0], image: null };
     }
 
+    if (SALUDOS.includes(queryNormalizada)) {
+      const saludo = corpus.find(item => item.intencion === 'saludo');
+      return { 
+        text: saludo.respuestas[Math.floor(Math.random() * saludo.respuestas.length)],
+        image: saludo.imagen ? path.join(__dirname, '../../', saludo.imagen) : null
+      };
+    }
+
     if (!query || typeof query !== 'string') {
       return this.getDefaultResponse();
     }
@@ -109,7 +117,6 @@ class NLPProcessor {
           data.documento = lines[1].trim();
           data.telefono = lines[2].trim();
           
-
           const emailLine = lines.slice(3).find(line => line.includes('@'));
           data.correo = emailLine ? emailLine.trim() : lines[3].trim();
         }
@@ -177,12 +184,24 @@ class NLPProcessor {
 
   async handleMainMenu(userId, query) {
     const courses = {
-      '1': '1', '1.': '1', 'inteligencia artificial': '1', 'ia': '1',
-      '2': '2', '2.': '2', 'ciencia de datos': '2', 'datos': '2',
-      '3': '3', '3.': '3', 'desarrollo web': '3', 'web': '3'
+      '1': '1', '1.': '1', 
+      'inteligencia artificial': '1', 'ia': '1', 'ai': '1', 'inteligencia': '1',
+      '2': '2', '2.': '2', 
+      'ciencia de datos': '2', 'datos': '2', 'analisis de datos': '2', 'analítica': '2',
+      '3': '3', '3.': '3', 
+      'desarrollo web': '3', 'web': '3', 'programacion web': '3', 'páginas web': '3'
     };
 
-    const course = courses[query];
+    // Buscar coincidencia exacta
+    let course = courses[query];
+
+    // Si no hay coincidencia exacta, buscar la mejor coincidencia
+    if (!course) {
+      const matches = stringSimilarity.findBestMatch(query, Object.keys(courses));
+      if (matches.bestMatch.rating > 0.6) {
+        course = courses[matches.bestMatch.target];
+      }
+    }
 
     if (course) {
       this.contextManager.updateContext(userId, { 
@@ -199,17 +218,49 @@ class NLPProcessor {
 
   async handleCourseOptions(userId, query, courseId) {
     const opciones = {
-      '1': 'horarios', 'horario': 'horarios',
-      '2': 'costo', 'precio': 'costo',
-      '3': 'requisitos', 'requisito': 'requisitos',
-      '4': 'duracion', 'duración': 'duracion',
-      '5': 'certificacion', 'certificado': 'certificacion',
-      '6': 'asesor', 'hablar': 'asesor',
-      '7': 'inscribirme', 'inscripcion': 'inscribirme',
-      '8': 'volver', 'menu': 'volver'
+      '1': 'horarios', 
+      'horario': 'horarios', 'horarios': 'horarios', 'fechas': 'horarios', 
+      'cuando': 'horarios', 'dias': 'horarios', 'días': 'horarios', 'cuándo': 'horarios',
+      
+      '2': 'costo', 
+      'precio': 'costo', 'costos': 'costo', 'precios': 'costo', 
+      'valor': 'costo', 'pago': 'costo', 'inversión': 'costo', 'cuanto cuesta': 'costo',
+      
+      '3': 'requisitos', 
+      'requisito': 'requisitos', 'requerimientos': 'requisitos', 
+      'necesito': 'requisitos', 'conocimientos previos': 'requisitos', 'que necesito': 'requisitos',
+      
+      '4': 'duracion', 
+      'duración': 'duracion', 'tiempo': 'duracion', 'dura': 'duracion', 
+      'cuanto dura': 'duracion', 'semanas': 'duracion', 'meses': 'duracion', 'días': 'duracion',
+      
+      '5': 'certificacion', 
+      'certificado': 'certificacion', 'diploma': 'certificacion', 
+      'certificación': 'certificacion', 'acreditación': 'certificacion', 'recibo diploma': 'certificacion',
+      
+      '6': 'asesor', 
+      'hablar': 'asesor', 'consultar': 'asesor', 'asesoría': 'asesor', 
+      'asesoria': 'asesor', 'contactar': 'asesor', 'consultoria': 'asesor', 'quiero hablar': 'asesor',
+      
+      '7': 'inscribirme', 
+      'inscripcion': 'inscribirme', 'matricular': 'inscribirme', 
+      'registrar': 'inscribirme', 'matricula': 'inscribirme', 'registro': 'inscribirme', 'quiero inscribirme': 'inscribirme',
+      
+      '8': 'volver', 
+      'menu': 'volver', 'menú': 'volver', 'principal': 'volver', 
+      'inicio': 'volver', 'atras': 'volver', 'regresar': 'volver', 'volver al menú': 'volver'
     };
 
-    const opcion = opciones[query];
+    // Buscar coincidencia exacta
+    let opcion = opciones[query];
+
+    // Si no hay coincidencia exacta, buscar la mejor coincidencia
+    if (!opcion) {
+      const matches = stringSimilarity.findBestMatch(query, Object.keys(opciones));
+      if (matches.bestMatch.rating > 0.6) {
+        opcion = opciones[matches.bestMatch.target];
+      }
+    }
 
     if (!opcion) {
       await this.logUnknownQuery(userId, query);
@@ -237,20 +288,19 @@ class NLPProcessor {
     }
 
     if (opcion === 'inscribirme') {
-  this.contextManager.updateContext(userId, { 
-    step: 'waiting_inscription_data',
-    data: {},
-    course: courseId
-  });
-  const courseData = corpus
-    .find(item => item.intencion === 'curso_seleccionado')
-    .logica[courseId];
-  return { 
-    text: `📝 Inscripción a ${courseData.nombre} ${courseData.emoji}\n\nPor favor envía tus datos (puedes usar cualquier formato):\n\n• Nombre completo\n• Número de documento\n• Teléfono de contacto\n• Correo electrónico`,
-    image: null
-  };
-}
-
+      this.contextManager.updateContext(userId, { 
+        step: 'waiting_inscription_data',
+        data: {},
+        course: courseId
+      });
+      const courseData = corpus
+        .find(item => item.intencion === 'curso_seleccionado')
+        .logica[courseId];
+      return { 
+        text: `📝 Inscripción a ${courseData.nombre} ${courseData.emoji}\n\nPor favor envía tus datos (puedes usar cualquier formato):\n\n• Nombre completo\n• Número de documento\n• Teléfono de contacto\n• Correo electrónico`,
+        image: null
+      };
+    }
 
     this.contextManager.updateContext(userId, {
       step: 'course_detail',
@@ -263,12 +313,13 @@ class NLPProcessor {
 
   async handleDetailOptions(userId, query, context) {
     const detailsOrder = ['horarios', 'costo', 'requisitos', 'duracion', 'certificacion'];
+    const queryNormalizada = this.normalizeString(query);
     
-    if (query === '1' || this.normalizeString(query) === 'siguiente') {
+    if (query === '1' || queryNormalizada === 'siguiente' || queryNormalizada.includes('otra informacion')) {
       const nextDetail = this.getNextDetail(context.detail, detailsOrder);
       this.contextManager.updateContext(userId, { detail: nextDetail });
       return this.getCourseDetailResponse(context.course, nextDetail);
-    } else if (query === '2' || this.normalizeString(query).includes('asesor')) {
+    } else if (query === '2' || queryNormalizada.includes('asesor') || queryNormalizada.includes('hablar')) {
       this.contextManager.updateContext(userId, { 
         step: 'waiting_contact_info',
         course: context.course
@@ -277,9 +328,15 @@ class NLPProcessor {
         text: '📞 Un asesor se contactará contigo. Por favor envía tu número de teléfono o correo electrónico:',
         image: null
       };
-    } else {
+    } else if (query === '3' || queryNormalizada.includes('volver') || queryNormalizada.includes('menu')) {
       this.contextManager.updateContext(userId, { step: 'main_menu' });
       return this.getMainMenuResponse();
+    } else {
+      await this.logUnknownQuery(userId, query);
+      return {
+        text: '😅 No entendí. Por favor elige:\n\n1. Ver otra información\n2. Hablar con asesor\n3. Volver al menú',
+        image: null
+      };
     }
   }
 
