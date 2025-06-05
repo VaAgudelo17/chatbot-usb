@@ -4,6 +4,27 @@ NeuroWeb es un servicio automatizado que permite la inscripción y atención a e
 
 <img src="https://github.com/user-attachments/assets/59a7dc4c-9d6f-4b9f-b869-61e6d4841445" alt="chatbot" width="140"/>
 
+## Funcionalidades 🛠️
+1. **Visualización de cursos disponibles:**
+   - Inteligencia Artificial
+   - Ciencia de Datos
+   - Desarrollo Web 
+   
+2. **Información de cursos:**:
+   - Horarios
+   - Costos
+   - Requisitos
+   - Duración
+   - Certificación
+3. **Proceso de inscripción:**
+  - Captura de datos personales
+  - Confirmación con resumen
+4. Otras funciones:
+  - Contacto con asesores
+  - Información de ubicación
+  - Datos de contacto
+
+
 ## 🌟 Características Principales
 
 - **Menú interactivo** de cursos académicos
@@ -99,5 +120,11 @@ npm start
 - **NPM v8+**
 - **WhatsApp activo en dispositivo móvil**
 - **Navegador Chromium instalado**
+
+## Archivos Principales 📄
+- **processor.js** Lógica de procesamiento de mensajes
+- **whatsapp.js** Configuración del cliente WhatsApp
+- **corpus.json** Base de conocimiento del chatbot
+- **contextManager.js** Gestión de flujos conversacionales
 
 
