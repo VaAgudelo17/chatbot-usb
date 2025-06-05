@@ -1,11 +1,11 @@
-# 🤖 Chatbot Académico con PLN
+# 🤖 Chatbot Académico con PLN: NeuroWeb
 
-Bot de WhatsApp para atención automática con procesamiento de lenguaje natural, diseñado para instituciones educativas.
+NeuroWeb es un servicio automatizado que permite la inscripción y atención a estudiantes interesados en formarse en Inteligencia Artificial, Ciencia de Datos y Desarrollo Web a través de WhatsApp.
 
-![chatbot](https://github.com/user-attachments/assets/d266b99f-ec52-48aa-869a-46ebd89003e3)
-
+<img src="https://github.com/user-attachments/assets/59a7dc4c-9d6f-4b9f-b869-61e6d4841445" alt="chatbot" width="200"/>
 
 ## 🌟 Características Principales
+
 - **Menú interactivo** de cursos y programas académicos
 - **Proceso de inscripción** guiado con validación de datos
 - **Información detallada** sobre horarios, costos y requisitos
@@ -13,9 +13,41 @@ Bot de WhatsApp para atención automática con procesamiento de lenguaje natural
 - **Reconocimiento flexible** de lenguaje natural
 - **Persistencia de contexto** durante conversaciones
 
+## 🔄 Flujo de Procesamiento
+
+1. **Recepción de Mensaje**: El bot recibe mensajes a través de WhatsApp Web
+2. **Preprocesamiento**: Normalización de texto (minúsculas, sin acentos)
+3. **Clasificación de Intención**: Búsqueda de coincidencias en el corpus
+4. **Manejo de contexto conversacional**
+5. **Generación de Respuesta**:
+   - Recuperación de información específica sobre los cursos
+   - Construcción de mensajes personalizados según el contexto
+6. **Persistencia de Datos**:
+   - Registro de conversaciones
+   - Almacenamiento de inscripciones a los cursos de NeuroWeb
+
+# 📦 Estructura del Proyecto
+
+```text
+chatbot-academico/
+├── assets/               # Multimedia del bot
+├── data/
+│   ├── corpus/           # Intenciones y respuestas
+│   ├── sessions/         # Sesiones de WhatsApp
+│   ├── contacts.log      # Registro de contactos
+│   └── inscriptions.log  # Inscripciones realizadas
+├── src/
+│   ├── services/
+│   │   ├── whatsapp/     # Conexión con WhatsApp
+│   │   └── nlp/          # Procesamiento de lenguaje
+└── config.json           # Configuración inicial
+
+
+
 ## 🛠️ Arquitectura Técnica
 
 ### Diagrama de Componentes
+
 ```mermaid
 flowchart TB
     subgraph WhatsApp
@@ -39,8 +71,3 @@ flowchart TB
     NLP --> BOT
     BOT --> WAPI
     WAPI --> Usuario
-
-diagrama...
-## hola
-
-
